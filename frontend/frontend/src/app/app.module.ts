@@ -18,7 +18,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AddDataComponent } from './component/add-data/add-data.component';
 import{HeaderComponent} from './component/header/header.component';
-import { FilterPipe} from './component/display/filter.pipe';
+import { HighlightSearch} from './component/display/filter.pipe';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -27,6 +27,8 @@ import { DisplayComponent } from './component/display/display.component';
 import { DropdownComponent } from './component/dropdown/dropdown.component'; 
 import { ReferanceComponent } from './component/referance/referance.component';
 import { SelectCheckAllComponent } from './component/display/select-check-all.component';
+import { AdminComponent } from './component/admin/admin.component';
+import{AuthGuardService} from './auth-guard.service';
 
 
 
@@ -35,8 +37,10 @@ import { SelectCheckAllComponent } from './component/display/select-check-all.co
 
 
 const routes:Routes=[
-  {path:'add/data',component:AddDataComponent},
+  {path:'add/data',component:AddDataComponent,
+  canActivate:[AuthGuardService]},
   {path:'referance',component:ReferanceComponent},
+  {path:'login',component:AdminComponent},
   
   {path:'display/data',component:DisplayComponent},
   {path:'',redirectTo:'display/data',pathMatch: 'full' }
@@ -48,10 +52,12 @@ const routes:Routes=[
     AddDataComponent,
     HeaderComponent,
     DisplayComponent,
-    FilterPipe,
+    HighlightSearch,
     DropdownComponent,
     SelectCheckAllComponent,
     ReferanceComponent,
+    AdminComponent,
+    
     
     
     
@@ -81,7 +87,7 @@ const routes:Routes=[
 
   ],
  
-  providers: [DataService],
+  providers: [DataService,AuthGuardService],
   
   bootstrap: [AppComponent]
 })

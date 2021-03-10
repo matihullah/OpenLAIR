@@ -18,6 +18,10 @@ export class HeaderComponent implements OnInit {
     // this.router.navigate(['/referance'] );
     this.router.navigate([]).then(result => {  window.open( `/referance`, '_blank'); });
   }
+  
+  admin(){
+    this.router.navigate(['/login']);
+  }
   metrics(){
   
     // this.router.navigate(['/referance'] );

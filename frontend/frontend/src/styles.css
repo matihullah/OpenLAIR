@@ -48,3 +48,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     font-weight: 550 !important;
     font-family: Roboto,"Helvetica Neue",sans-serif !important;
 }
+.highlightText{
+    background-color: yellow;
+}

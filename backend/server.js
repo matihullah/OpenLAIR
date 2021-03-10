@@ -22,6 +22,27 @@ MongoClient.connect(url, function(err, db) {
   var   db=db.db("mydb1");  // database name
 
 
+/////////////  Authentication /////////////////
+
+router.route('/login').post((req,res)=>{
+  
+  var username=req.body.username;
+  var password= req.body.password;
+
+  db.collection("login").findOne({username:username, password:password},function(err,user){
+    if(err){
+      console.log(err);
+    }
+    if(!user){
+      
+      return res.status(404).send();
+    }
+    
+    return res.status(200).send(user);
+  })
+})
+
+
 /////////////Instruction for data display/////////////////
 
 router.route('/display/data').get((req,res)=>{
@@ -40,9 +61,9 @@ router.route('/display/data').get((req,res)=>{
 
 router.route('/getsearchmetrics').post((req,res)=>{
   const metrics_name = req.body.search; 
-  
+   
 
-  db.collection("treeStructure").find({'LearningActivities.indicator.metrics':  new RegExp(metrics_name)}).toArray(function(error, documents) {
+  db.collection("treeStructure").find({'LearningActivities.indicator.metrics':   { $regex : new RegExp(metrics_name, "i") }}).toArray(function(error, documents) {
     if (err) throw error;
 
     res.send(documents);

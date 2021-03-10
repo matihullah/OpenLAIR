@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient,HttpHeaders} from '@angular/common/http';
+import { userInfo } from 'os';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,7 @@ import {HttpClient,HttpHeaders} from '@angular/common/http';
 export class DataService {
 
   uri='http://localhost:4000';
-
+  loggedIn = false;
   
   constructor(private http: HttpClient) { 
     
@@ -55,4 +56,19 @@ export class DataService {
 
 
   }
-}
+
+  login(username,password){
+    const httpOptions = {
+      headers: new HttpHeaders({
+          'Content-Type': 'text/plain',
+      })
+  }
+  
+    return this.http.post(`${this.uri}/login`,{username,password, httpOptions});
+  }
+  isLoggedIn():boolean{
+    return this.loggedIn;
+  }
+
+
+  }

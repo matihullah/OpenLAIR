@@ -78,4 +78,6 @@ ng-multiselect-dropdown {
   margin-left: 10%;
   margin-right: 10%;
 }
-
+.highlightText {
+  background: yellow;
+}

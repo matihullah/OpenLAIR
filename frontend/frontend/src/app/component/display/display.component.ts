@@ -5,8 +5,10 @@ import { data } from "../../data.model";
 import { MatSnackBar } from "@angular/material";
 import { MatDialog } from "@angular/material/dialog";
 import { NgModel } from "@angular/forms";
-import {BrowserModule, DomSanitizer} from '@angular/platform-browser'
+import { BrowserModule, DomSanitizer } from '@angular/platform-browser'
 import { element } from 'protractor';
+
+import { from } from "rxjs";
 
 
 @Component({
@@ -15,9 +17,6 @@ import { element } from 'protractor';
   styleUrls: ["./display.component.css"],
 })
 
-// @Pipe({
-//   name: 'highlight'
-// })
 
 export class DisplayComponent implements OnInit {
   @ViewChild("secondDialog", { static: true }) secondDialog: any;
@@ -42,9 +41,10 @@ export class DisplayComponent implements OnInit {
   ind: any;
   id: any;
   ind_list = [];
-  met:any;
+  met: any;
   mat_list = [];
-  
+  results: any;
+
 
   constructor(
     private dataService: DataService,
@@ -52,7 +52,7 @@ export class DisplayComponent implements OnInit {
     private snackbar: MatSnackBar,
     public dialog: MatDialog,
     private sanitizer: DomSanitizer
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.fetchdata();
@@ -71,7 +71,7 @@ export class DisplayComponent implements OnInit {
   /////////////// function for learning activities selection /////////////
 
   onItemSelect(item: any) {
-    
+
     let p = this.selectedevent;
     this.dataService.getdata().subscribe((data: data[]) => {
       this.data = data;
@@ -79,15 +79,15 @@ export class DisplayComponent implements OnInit {
       this.isLoaded = true;
       let event = this.data.filter(function (obj) {
         return p.includes(obj.LearningEvents);
-        
+
       });
-   
+
 
       this.setLearningActivities(event);
 
       if ((p! = "")) {
         this.data = event;
-        
+
       }
       let newArray = this.selectedItems;
       this.data.filter(function (obj) {
@@ -98,7 +98,7 @@ export class DisplayComponent implements OnInit {
     });
   }
   onSelectAll(items: any) {
-    
+
     this.learningValueChange(this.selectedevent);
   }
   // function of fetching data from database
@@ -113,10 +113,12 @@ export class DisplayComponent implements OnInit {
       this.selected.push(this.options);
       this.learningValueChange("Select All");
       this.setLearningActivities(this.data);
-      
+
     });
   }
   ////////////////pop up by click Indicator to show meterics ///////////
+
+
   getMeterics(indic: any) {
     this.mat = indic.metrics;
     let res = this.mat;
@@ -125,30 +127,32 @@ export class DisplayComponent implements OnInit {
   }
 
   learningValueChange(p) {
-    
+
     this.selectedevent = p;
     this.dataService.getdata().subscribe((data: data[]) => {
       this.data = data;
       this.isLoaded = true;
       if (p == "Select All") {
-        
+
       } else {
         let event = this.data.filter(function (obj) {
           return p.includes(obj.LearningEvents);
         });
-         this.setLearningActivities(event);
-        
+        this.setLearningActivities(event);
+
 
         if (p != "") {
           this.data = event;
-          
+
         }
       }
     });
   }
-  
+
 
   /////////////// display learning activities ////////////////////
+  
+  
   setLearningActivities(events: any) {
     this.dropdownList = [];
     this.name = [];
@@ -160,26 +164,32 @@ export class DisplayComponent implements OnInit {
         }
       }
     }
- 
+
   }
 
   ///////////////////   search by metrics ///////////////
 
   learningEventsChangeOnSearch(search: any) {
     if (search) {
+      
       this.dataService.getsearchresult(search).subscribe((data: data[]) => {
         this.data = data;
-        
+
       });
     } else {
       this.fetchdata();
     }
   }
   ///////////////////   search by indicator ///////////////
+  
+  
   searchIndicator(search: any) {
     if (search) {
+
       this.dataService.getsearchind(search).subscribe((data: data[]) => {
+
         this.data = data;
+
 
       });
     } else {
@@ -187,40 +197,18 @@ export class DisplayComponent implements OnInit {
     }
   }
 
-  /////////////
 
-  // transform(value: any, args: any): any {
-  //   if (!args) {
-  //     return value;
-  //   }
-  //   // Match in a case insensitive maneer
-  //   const re = new RegExp(args, 'gi');
-  //   const match = value.match(re);
-
-  //   // If there's no match, just return the original value.
-  //   if (!match) {
-  //     return value;
-  //   }
-
-  //   const replacedValue = value.replace(re, "<mark>" + match[0] + "</mark>")
-  //   return this.sanitizer.bypassSecurityTrustHtml(replacedValue)
-  // }
-
-  // searchTerm: string;
-  // updateSearch(e) {
-  //   this.searchTerm = e.target.value
-  // }
 
   checkvalue(event: any) {
-  
-    
+
+
     if (this.selectedItems.length == 0) {
- 
+
       this.learningValueChange(this.selectedevent)
     }
-    else{
-      let index=this.selectedItems.length 
-      if (index !== -1){
+    else {
+      let index = this.selectedItems.length
+      if (index !== -1) {
         this.selectedItems.splice(index, 1);
         this.onItemSelect(this.selectedItems)
       }
@@ -229,45 +217,45 @@ export class DisplayComponent implements OnInit {
 
   ////////////////// function for checkbox to select indicator indicator  //////////////////
 
-  Checkbox(event:any, selectInd:any) {
+  Checkbox(event: any, selectInd: any) {
     this.ind = selectInd.indicatorName;
     this.met = selectInd;
-   // console.log(selectInd)
-   
+    // console.log(selectInd)
+
 
     if (event.target.checked) {
       this.ind_list.push(this.ind);
       this.mat_list.push(this.met);
-      
+
     }
     else {
       let index = this.ind_list.indexOf(this.ind);
       let index1 = this.mat_list.indexOf(this.met);
-    
-    
+
+
       if (index !== -1) {
         this.ind_list.splice(index, 1);
         this.mat_list.splice(index1, 1);
       }
-      
+
     }
   }
 
- 
+
   getSelectedind = (x) => {
     let data = x;
 
     // Convert the text to BLOB.
-    let textToBLOB = new Blob([JSON.stringify(data)], {type : 'application/json'});
-   
+    let textToBLOB = new Blob([JSON.stringify(data)], { type: 'application/json' });
+
     let sFileName = "indicator.json"; // The file to save the data.
 
     let newLink = document.createElement("a");
     newLink.download = sFileName;
     if (textToBLOB.size == 2) {
-      
+
       window.alert("No indicator is selected");
-      
+
     } else if ((window as any).webkitURL != null) {
       newLink.href = (window as any).webkitURL.createObjectURL(textToBLOB);
     } else {
@@ -278,8 +266,8 @@ export class DisplayComponent implements OnInit {
 
     newLink.click();
   };
-  reset(){
-    this.ind_list=[];
+  reset() {
+    this.ind_list = [];
     this.uncheckAll();
   }
 

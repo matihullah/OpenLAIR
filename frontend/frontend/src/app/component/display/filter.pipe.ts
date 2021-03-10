@@ -1,14 +1,31 @@
 import { Pipe, PipeTransform } from '@angular/core';
+
 @Pipe({
-  name: 'filter'
+    name: 'highlight'
 })
-export class FilterPipe implements PipeTransform {
-  transform(items: any[], searchText: string): any[] {
-    if(!items) return [];
-    if(!searchText) return items;
-searchText = searchText.toLowerCase();
-return items.filter( it => {
-      return it.toLowerCase().includes(searchText);
-    });
-   }
+
+export class HighlightSearch implements PipeTransform {
+
+    transform(text: string, search): string {
+        if (search && text) {
+          let pattern = search.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+          pattern = pattern.split(' ').filter((t) => {
+            return t.length > 0;
+          }).join(' ');
+          const regex = new RegExp(pattern, 'gi');
+          
+
+          
+          
+          return text.replace(regex, (match) => 
+             `<span class="highlightText">${match}</span>`
+              
+          );
+     
+        } else {
+          return text;
+        }
+      }
+      
+      
 }
